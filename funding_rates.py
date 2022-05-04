@@ -4,8 +4,8 @@ import ccxt
 import time
 from datetime import datetime
 
-TOKEN = 'OTY3MTM0NDM5NTcyNDAyMjE2.YmL4Ig.Br3rgaF6WpgsWhtJWa0JChuYW9M'
-TOKEN_oi = 'OTY5Mjk5NjUwMTkwMzc2OTYw.YmrYpQ.U5f5YBi7O5Xicjwzs1wZfIfTf-w'
+TOKEN = ''
+
 client = discord.Client()
 
 binance_usd = ccxt.binanceusdm()
@@ -17,8 +17,8 @@ ftx_futures = ccxt.ftx()
 # bitfinex_futures = ccxt.bitfinex()
 
 
-markets = coinbase_pro.load_markets()
-markets = coinbase_pro.symbols
+# markets = coinbase_pro.load_markets()
+# markets = coinbase_pro.symbols
 
 markets_binance_usd = ['BTC/USDT', 'ETH/USDT']
 markets_binance_coin = ['BTC/USD', 'ETH/USD']
@@ -45,15 +45,17 @@ async def on_ready():
     while True:
         for pos in range(len(data['exchanges'])):
             for market in data['markets'][pos]:
-                funding_rate = data['exchanges'][pos].fetch_funding_rate(market) * 100
+                funding_rate = data['exchanges'][pos].fetch_funding_rate(market)
+
+                funding_value = funding_rate['fundingRate'] * 100
 
                 if data['exchanges'][pos] == ftx_futures:
-                    funding_rate = funding_rate * 8
+                    funding_value = funding_value * 8
 
                 if 'e' in str(funding_rate['fundingRate']):
-                    message = f'Funding rate for {market} is: {"%.08f" % funding_rate["fundingRate"]}.'
+                    message = f'Funding rate for {market} is: {"%.08f" % funding_value}.'
                 else:
-                    message = f'Funding rate for {market} is: {funding_rate["fundingRate"]}.'
+                    message = f'Funding rate for {market} is: {funding_value}.'
                 
                 print(message)
                 
