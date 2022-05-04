@@ -45,7 +45,10 @@ async def on_ready():
     while True:
         for pos in range(len(data['exchanges'])):
             for market in data['markets'][pos]:
-                funding_rate = data['exchanges'][pos].fetch_funding_rate(market)#['info']['nextFundingRate']
+                funding_rate = data['exchanges'][pos].fetch_funding_rate(market) * 100
+
+                if data['exchanges'][pos] == ftx_futures:
+                    funding_rate = funding_rate * 8
 
                 if 'e' in str(funding_rate['fundingRate']):
                     message = f'Funding rate for {market} is: {"%.08f" % funding_rate["fundingRate"]}.'
